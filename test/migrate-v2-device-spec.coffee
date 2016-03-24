@@ -1,17 +1,18 @@
 _ = require 'lodash'
 MeshbluDeviceTransmogrifier = require '../'
 
-beforeEach ->
-  @sut = new MeshbluDeviceTransmogrifier
-
 describe 'a device with data', ->
   beforeEach ->
     @device =
       other: true
-    @transmogrifiedDevice = @sut.transmogrify @device
+    @sut = new MeshbluDeviceTransmogrifier @device
+    @transmogrifiedDevice = @sut.transmogrify()
 
   it 'should preserve existing data', ->
     expect(@transmogrifiedDevice.other).to.be.true
+
+  it 'should set the version to 2.0.0', ->
+    expect(@transmogrifiedDevice.meshblu.version).to.equal '2.0.0'
 
 describe 'migrating a v2 device', ->
   beforeEach ->
@@ -20,7 +21,8 @@ describe 'migrating a v2 device', ->
       meshblu:
         version: '2.0.0'
 
-    @transmogrifiedDevice = @sut.transmogrify @device
+    @sut = new MeshbluDeviceTransmogrifier @device
+    @transmogrifiedDevice = @sut.transmogrify()
 
   it 'should do nothing', ->
     expect(@transmogrifiedDevice).to.deep.equal @device
