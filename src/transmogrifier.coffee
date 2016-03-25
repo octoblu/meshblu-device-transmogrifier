@@ -1,10 +1,11 @@
 _ = require 'lodash'
 class MeshbluDeviceTransmogrifier
   constructor: (oldDevice) ->
+    throw new Error('Someone tried to transmogrify an undefined device! Stop doing that.') unless oldDevice?
     @device = _.clone oldDevice
     @device.meshblu = _.cloneDeep oldDevice.meshblu
 
-  transmogrify: (device) =>
+  transmogrify: =>
     return @device if _.get(@device, 'meshblu.version') == '2.0.0'
     _.set @device, 'meshblu.version', '2.0.0'
 
