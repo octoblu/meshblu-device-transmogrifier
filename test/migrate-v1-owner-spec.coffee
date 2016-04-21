@@ -13,21 +13,22 @@ describe 'migrating the owner', ->
     it 'should add the owner to all the whitelists', ->
       expectedWhitelists =
          broadcast:
-            received: a: {}
-            sent: a: {}
+            received: [uuid: 'a']
+            sent: [uuid: 'a']
           discover:
-            view: a: {}
-            as: a: {}
+            view: [uuid: 'a']
+            as: [uuid: 'a']
           configure:
-            update: a: {}
-            as: a: {}
-            sent: a: {}
-            received: a: {}
+            update: [uuid: 'a']
+            as: [uuid: 'a']
+            sent: [uuid: 'a']
+            received: [uuid: 'a']
           message:
-            from: a: {}
-            as: a: {}
-            sent: a: {}
-            received: a: {}
+            from: [uuid: 'a']
+            as: [uuid: 'a']
+            sent: [uuid: 'a']
+            received: [uuid: 'a']
+
       expect(@transmogrifiedDevice.meshblu.whitelists).to.deep.equal expectedWhitelists
 
     it 'should remove old whitelists', ->

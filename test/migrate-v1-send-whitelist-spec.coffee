@@ -10,7 +10,7 @@ describe 'migrating sendWhitelist', ->
       @transmogrifiedDevice = @sut.transmogrify()
 
     it 'should create the correct whitelist', ->
-      expect(@transmogrifiedDevice.meshblu.whitelists.message.from).to.have.same.keys ['a']
+      expect(@transmogrifiedDevice.meshblu.whitelists.message.from).to.containSubset [uuid: 'a']
 
     it 'should remove old whitelists', ->
       expect(@transmogrifiedDevice.sendWhitelist).not.to.exist

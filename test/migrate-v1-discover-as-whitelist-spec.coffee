@@ -10,7 +10,7 @@ describe 'migrating discoverAsWhitelist', ->
       @transmogrifiedDevice = @sut.transmogrify()
 
     it 'should create the correct whitelist', ->
-      expect(@transmogrifiedDevice.meshblu.whitelists.discover.as).to.have.same.keys ['a']
+      expect(@transmogrifiedDevice.meshblu.whitelists.discover.as).to.containSubset [uuid: 'a']
 
     it 'should remove old whitelists', ->
       expect(@transmogrifiedDevice.discoverAsWhitelist).not.to.exist
