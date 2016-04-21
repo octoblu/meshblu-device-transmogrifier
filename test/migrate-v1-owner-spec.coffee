@@ -12,22 +12,55 @@ describe 'migrating the owner', ->
 
     it 'should add the owner to all the whitelists', ->
       expectedWhitelists =
-         broadcast:
-            received: [uuid: 'a']
-            sent: [uuid: 'a']
-          discover:
-            view: [uuid: 'a']
-            as: [uuid: 'a']
-          configure:
-            update: [uuid: 'a']
-            as: [uuid: 'a']
-            sent: [uuid: 'a']
-            received: [uuid: 'a']
-          message:
-            from: [uuid: 'a']
-            as: [uuid: 'a']
-            sent: [uuid: 'a']
-            received: [uuid: 'a']
+        broadcast:
+          received: [uuid: 'a']
+          sent: [uuid: 'a']
+        discover:
+          view: [uuid: 'a']
+          as: [uuid: 'a']
+        configure:
+          update: [uuid: 'a']
+          as: [uuid: 'a']
+          sent: [uuid: 'a']
+          received: [uuid: 'a']
+        message:
+          from: [uuid: 'a']
+          as: [uuid: 'a']
+          sent: [uuid: 'a']
+          received: [uuid: 'a']
+
+      expect(@transmogrifiedDevice.meshblu.whitelists).to.deep.equal expectedWhitelists
+
+    it 'should remove old whitelists', ->
+      expect(@transmogrifiedDevice.configureAsWhitelist).not.to.exist
+
+  context 'with a sendWhitelist record', ->
+    beforeEach ->
+      @device =
+        owner: 'a'
+        sendWhitelist: ['*']
+
+      @sut = new MeshbluDeviceTransmogrifier @device
+      @transmogrifiedDevice = @sut.transmogrify()
+
+    it 'should add the owner to all the whitelists, preserving message.sent', ->
+      expectedWhitelists =
+        broadcast:
+          received: [{uuid: 'a'}]
+          sent: [{uuid: 'a'}]
+        discover:
+          view: [{uuid: 'a'}]
+          as: [{uuid: 'a'}]
+        configure:
+          update: [{uuid: 'a'}]
+          as: [{uuid: 'a'}]
+          sent: [{uuid: 'a'}]
+          received: [{uuid: 'a'}]
+        message:
+          from: [{uuid: '*'},{uuid: 'a'}]
+          as: [{uuid: 'a'}]
+          sent: [{uuid: 'a'}]
+          received: [{uuid: 'a'}]
 
       expect(@transmogrifiedDevice.meshblu.whitelists).to.deep.equal expectedWhitelists
 

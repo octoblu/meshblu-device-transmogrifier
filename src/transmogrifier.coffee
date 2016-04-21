@@ -21,6 +21,12 @@ class MeshbluDeviceTransmogrifier
 
     return @device
 
+  _addToList: (device, listName, record) =>
+    list = _.get device, listName
+    list = [] unless _.isArray list
+    list = _.unionBy list, [record], 'uuid'
+    _.set device, listName, list
+
   _migrateConfigureWhitelist: =>
     newWhitelist = _.map @device.configureWhitelist, (uuid) => {uuid}
     _.set @device, "meshblu.whitelists.configure.update", newWhitelist
@@ -42,22 +48,24 @@ class MeshbluDeviceTransmogrifier
 
   _migrateOwner: =>
     return unless @device.owner?
-    owner = @device.owner
-    _.set @device, "meshblu.whitelists.broadcast.received", newWhitelist
-    _.set @device, "meshblu.whitelists.broadcast.sent", newWhitelist
+    owner = {uuid: @device.owner}
+    newWhitelist = [owner]
 
-    _.set @device, "meshblu.whitelists.configure.as", newWhitelist
-    _.set @device, "meshblu.whitelists.configure.sent", newWhitelist
-    _.set @device, "meshblu.whitelists.configure.received", newWhitelist
-    _.set @device, "meshblu.whitelists.configure.update", newWhitelist
+    @_addToList @device, 'meshblu.whitelists.broadcast.received', owner
+    @_addToList @device, 'meshblu.whitelists.broadcast.sent', owner
 
-    _.set @device, "meshblu.whitelists.discover.as", newWhitelist
-    _.set @device, "meshblu.whitelists.discover.view", newWhitelist
+    @_addToList @device, 'meshblu.whitelists.configure.as', owner
+    @_addToList @device, 'meshblu.whitelists.configure.sent', owner
+    @_addToList @device, 'meshblu.whitelists.configure.received', owner
+    @_addToList @device, 'meshblu.whitelists.configure.update', owner
 
-    _.set @device, "meshblu.whitelists.message.as", newWhitelist
-    _.set @device, "meshblu.whitelists.message.from", newWhitelist
-    _.set @device, "meshblu.whitelists.message.sent", newWhitelist
-    _.set @device, "meshblu.whitelists.message.received", newWhitelist
+    @_addToList @device, 'meshblu.whitelists.discover.as', owner
+    @_addToList @device, 'meshblu.whitelists.discover.view', owner
+
+    @_addToList @device, 'meshblu.whitelists.message.as', owner
+    @_addToList @device, 'meshblu.whitelists.message.from', owner
+    @_addToList @device, 'meshblu.whitelists.message.sent', owner
+    @_addToList @device, 'meshblu.whitelists.message.received', owner
 
   _migrateReceiveWhitelist: =>
     newWhitelist = _.map @device.receiveWhitelist, (uuid) => {uuid}
