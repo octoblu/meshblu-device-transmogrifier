@@ -28,28 +28,31 @@ class MeshbluDeviceTransmogrifier
     _.set device, listName, list
 
   _migrateConfigureWhitelist: =>
-    newWhitelist = _.map @device.configureWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.configure.update", newWhitelist
+    _.each @device.configureWhitelist, (uuid) =>
+      @_addToList @device, 'meshblu.whitelists.configure.update', {uuid}
+
+      @_addToList @device, 'meshblu.whitelists.broadcast.received', {uuid}
+      @_addToList @device, 'meshblu.whitelists.message.sent', {uuid}
+      @_addToList @device, 'meshblu.whitelists.message.received', {uuid}
 
     delete @device.configureWhitelist
 
   _migrateDiscoverWhitelist: =>
-    newWhitelist = _.map @device.discoverWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.discover.view", newWhitelist
-    _.set @device, "meshblu.whitelists.configure.sent", newWhitelist
+    _.each @device.discoverWhitelist, (uuid) =>
+      @_addToList @device, "meshblu.whitelists.discover.view", {uuid}
+      @_addToList @device, "meshblu.whitelists.configure.sent", {uuid}
 
     delete @device.discoverWhitelist
 
   _migrateDiscoverAsWhitelist: =>
-    newWhitelist = _.map @device.discoverAsWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.discover.as", newWhitelist
+    _.each @device.discoverAsWhitelist, (uuid) =>
+      @_addToList @device, "meshblu.whitelists.discover.as", {uuid}
 
     delete @device.discoverAsWhitelist
 
   _migrateOwner: =>
     return unless @device.owner?
     owner = {uuid: @device.owner}
-    newWhitelist = [owner]
 
     @_addToList @device, 'meshblu.whitelists.broadcast.received', owner
     @_addToList @device, 'meshblu.whitelists.broadcast.sent', owner
@@ -68,33 +71,33 @@ class MeshbluDeviceTransmogrifier
     @_addToList @device, 'meshblu.whitelists.message.received', owner
 
   _migrateReceiveWhitelist: =>
-    newWhitelist = _.map @device.receiveWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.broadcast.sent", newWhitelist
+    _.each @device.receiveWhitelist, (uuid) =>
+      @_addToList @device, "meshblu.whitelists.broadcast.sent", {uuid}
 
     delete @device.receiveWhitelist
 
   _migrateReceiveAsWhitelist: =>
-    newWhitelist = _.map @device.receiveAsWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.message.received", newWhitelist
-    _.set @device, "meshblu.whitelists.broadcast.received", newWhitelist
+    _.each @device.receiveAsWhitelist, (uuid) =>
+      @_addToList @device, "meshblu.whitelists.message.received", {uuid}
+      @_addToList @device, "meshblu.whitelists.broadcast.received", {uuid}
 
     delete @device.receiveAsWhitelist
 
   _migrateSendWhitelist: =>
-    newWhitelist = _.map @device.sendWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.message.from", newWhitelist
+    _.each @device.sendWhitelist, (uuid) =>
+      @_addToList @device, "meshblu.whitelists.message.from", {uuid}
 
     delete @device.sendWhitelist
 
   _migrateSendAsWhitelist: =>
-    newWhitelist = _.map @device.sendAsWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.message.as", newWhitelist
+    _.each @device.sendAsWhitelist, (uuid) =>
+      @_addToList @device, "meshblu.whitelists.message.as", {uuid}
 
     delete @device.sendAsWhitelist
 
   _migrateConfigureAsWhitelist: =>
-    newWhitelist = _.map @device.configureAsWhitelist, (uuid) => {uuid}
-    _.set @device, "meshblu.whitelists.configure.as", newWhitelist
+    _.each @device.configureAsWhitelist, (uuid) =>
+      @_addToList @device, "meshblu.whitelists.configure.as", {uuid}
 
     delete @device.configureAsWhitelist
 
